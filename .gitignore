@@ -1,0 +1,5 @@
+.DS_STORE
+/db/data/
+/dbconn.properties
+/dbconn.go
+/.idea
