@@ -3,3 +3,4 @@
 /dbconn.properties
 /dbconn.go
 /.idea
+/backend/db/data/
