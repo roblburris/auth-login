@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <script src="main.js"></script>
+  <meta
+    name="google-signin-client_id"
+    content="663269371597-v5mu98a0p4ic6be949eo21ousajet09r.apps.googleusercontent.com"
+  />
+  <head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+  </head>
+  <h1 style="text-align: center">Test Login Page</h1>
+
+  <div
+    style="
+      display: grid;
+      grid-template-columns: auto auto auto;
+      grid-template-rows: 20% auto auto;
+    "
+  >
+    <a
+      style="
+        grid-column: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        grid-row: 1;
+      "
+    >
+      <h3>Login Here</h3>
+    </a>
+    <form
+      id="form"
+      onsubmit="onSubmitLogin()"
+      style="
+        grid-column: 2;
+        grid-row: 2;
+        display: grid;
+        grid-template-rows: auto auto auto auto auto;
+      "
+    >
+      <div>
+        <div
+          style="
+            grid-row: 1;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+          <label for="username"> </label>
+          <input name="username" id="username" type="text" />
+        </div>
+        <div
+          style="
+            grid-row: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+          <label for="password"> </label>
+          <input name="password" id="password" type="text" />
+          <br />
+          <input type="submit" value="Submit" />
+        </div>
+      </div>
+    </form>
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <div
+      class="g-signin2"
+      style="
+        grid-row: 3;
+        width: 100%;
+        grid-column: 2;
+        display: flex;
+        margin: auto;
+        justify-content: center;
+      "
+      data-onsuccess="onSignIn"
+    ></div>
+  </div>
+  <body></body>
+</html>

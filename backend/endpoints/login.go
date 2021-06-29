@@ -1,9 +1,9 @@
 package endpoints
 
 import (
-	"github.com/roblburris/auth-login/auth"
     "encoding/json"
     "fmt"
+    "github.com/roblburris/auth-login/auth"
     "io/ioutil"
     "log"
     "net/http"
@@ -39,7 +39,7 @@ func LoginEndpoint() RequestHandler {
         }
 
         typeOf := fmt.Sprintf("%v", body["type"])
-        if typeOf != "gsuite" {
+        if typeOf != "gsuite" || typeOf != "non_gsuite" {
             log.Printf("Request not formatted correctly. Expecting `gsuite` or `non-gsuite` in body[`type`] but got `%s`\n",
             typeOf )
             w.WriteHeader(http.StatusBadRequest)
