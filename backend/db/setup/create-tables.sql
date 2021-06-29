@@ -1,19 +1,9 @@
 CREATE TABLE USERS (
-    uid INT PRIMARY KEY,
-    email VARCHAR(300),
-    name VARCHAR(300),
-    role VARCHAR(300)
-);
-
-CREATE TABLE NON_GSUITE_USERS (
-    uid INT,
+    aud VARCHAR PRIMARY KEY,
+    name VARCHAR,
+    email VARCHAR,
     salt BYTEA,
     pw BYTEA,
-    FOREIGN KEY (uid) REFERENCES USERS(uid)
+    role VARCHAR
 );
 
-CREATE TABLE GSUITE_USERS (
-    uid INT,
-    googleID INT,
-    FOREIGN KEY (uid) REFERENCES USERS(uid)
-)
