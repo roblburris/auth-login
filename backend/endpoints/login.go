@@ -1,6 +1,7 @@
 package endpoints
 
 import (
+	"github.com/roblburris/auth-login/auth"
     "encoding/json"
     "fmt"
     "io/ioutil"
@@ -37,24 +38,32 @@ func LoginEndpoint() RequestHandler {
             return
         }
 
-        if fmt.Sprintf("%v", body["type"]) != "gsuite" ||  fmt.Sprintf("%v", body["type"]) != "non-gsuite" {
-            log.Printf("Request not formatted correctly. Expecting `gsuite` or `non-gsuite` in body[`type`] but got %s\n",
-                fmt.Sprintf("%v", body["type"]))
+        typeOf := fmt.Sprintf("%v", body["type"])
+        if typeOf != "gsuite" {
+            log.Printf("Request not formatted correctly. Expecting `gsuite` or `non-gsuite` in body[`type`] but got `%s`\n",
+            typeOf )
             w.WriteHeader(http.StatusBadRequest)
             return
         }
 
         // case if gsuite user
-        if fmt.Sprintf("%v", body["type"]) == "gsuite" {
-
+        if typeOf  == "gsuite" {
+            payload, err := auth.ValidateGoogleJWT(fmt.Sprintf("%v", body["jwt"]))
+            if err != nil {
+                log.Printf("does not work. %v\n", err)
+                w.WriteHeader(http.StatusInternalServerError)
+                return
+            }
+            log.Printf("%v\n", payload)
         } else { // case if normal user
-
+            w.WriteHeader(http.StatusInternalServerError)
+            return
         }
 
         // set cookie and return
-
 
         w.WriteHeader(http.StatusOK)
         return
     }
 }
+

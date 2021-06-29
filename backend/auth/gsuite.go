@@ -18,13 +18,6 @@ type GoogleClaims struct {
 	jwt.StandardClaims
 }
 
-// http
-// ioutil
-// jwt -- 
-// fmt
-// json, time
-// errors
-
 
 func getGooglePublicKey(keyID string) (string, error) {
 	resp, err := http.Get("https://www.googleapis.com/oauth2/v1/certs")
@@ -76,14 +69,14 @@ func ValidateGoogleJWT(tokenString string) (GoogleClaims, error) {
 	}
 	
 
-	//TODO check if it works with other gmail accounts (School accounts)
+	//TODO: check if it works with other gmail accounts (School accounts)
 	if claims.Issuer != "accounts.google.com" && claims.Issuer != "https://accounts.google.com" {
 		return GoogleClaims{}, errors.New("iss is invalid")
 	}
 
-	if claims.Audience != "663269371597-v5mu98a0p4ic6be949eo21ousajet09r" {
-		return GoogleClaims{}, errors.New("aud is invalid")
-	}
+	// if claims.Audience != "" {
+	// 	return GoogleClaims{}, errors.New("aud is invalid")
+	// }
 
 	if claims.ExpiresAt < time.Now().UTC().Unix() {
 		return GoogleClaims{}, errors.New("JWT is expired")
