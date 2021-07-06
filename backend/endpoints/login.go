@@ -68,8 +68,11 @@ func LoginEndpoint(ctx context.Context, pool *pgxpool.Pool) RequestHandler {
             }
             if res {
                 log.Printf("Verified user!\n")
+                // TODO create session for user
+                // TODO send back cookie
             } else {
                 log.Printf("Unverified user.\n")
+                // TODO return error back to user
             }
         } else { // case if normal user
             w.WriteHeader(http.StatusInternalServerError)
