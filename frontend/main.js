@@ -1,12 +1,5 @@
 async function onSignIn(googleUser) {
-  let profile = googleUser.getBasicProfile();
-  console.log("ID: " + profile.getId()); // Do not send to your backend! Use an ID token instead.
-  console.log("Name: " + profile.getName());
-  console.log("Image URL: " + profile.getImageUrl());
-  console.log("Email: " + profile.getEmail()); // This is null if the 'email' scope is not present.
-  console.log(googleUser.getAuthResponse().id_token);
-
-  const response = fetch("http://localhost:63342/login", {
+  const response = fetch("http://localhost:8000/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -15,10 +8,9 @@ async function onSignIn(googleUser) {
       type: "gsuite",
       jwt: googleUser.getAuthResponse().id_token,
     }),
-  });
-  window.alert("a");
-  console.log(googleUser.getAuthResponse().id_token);
-  window.location = "signed-in.html";
+  }).then(response => response.text()).then(
+      text => document.textContent = text
+  );
 }
 
 async function onSubmitLogin() {

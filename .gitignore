@@ -4,3 +4,4 @@
 /dbconn.go
 /.idea
 /backend/db/data/
+/backend/session/redis-6.2.4/
