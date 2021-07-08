@@ -1,0 +1,7 @@
+.DS_STORE
+/db/data/
+/dbconn.properties
+/dbconn.go
+/.idea
+/backend/db/data/
+/backend/session/redis-6.2.4/

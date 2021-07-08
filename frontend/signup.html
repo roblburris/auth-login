@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+  <h1>Sign Up</h1>
+  <form
+      id="form"
+      onsubmit="onSubmitLogin()"
+      style="
+        grid-column: 2;
+        grid-row: 2;
+        display: grid;
+        grid-template-rows: auto auto auto auto auto;
+      "
+    >
+      <div>
+        <div
+          style="
+            grid-row: 1;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+          <label for="name"> </label>
+          <input name="name" id="name" type="text" placeholder="name" />
+        </div>
+        <div
+          style="
+            grid-row: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+          <label for="grade"> </label>
+          <input
+            name="grade"
+            id="grade"
+            type="text"
+            placeholder="grade"
+          />
+          <br />
+          <input type="submit" value="Submit" />
+        </div>
+      </div>
+    </form>
+
+</html>
