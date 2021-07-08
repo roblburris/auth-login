@@ -7,12 +7,14 @@ import (
     "github.com/jackc/pgx/v4/pgxpool"
     "github.com/roblburris/auth-login/auth"
     "github.com/roblburris/auth-login/db"
+    "github.com/roblburris/auth-login/session"
+    "github.com/go-redis/redis/v8"
     "io/ioutil"
     "log"
     "net/http"
 )
 
-func LoginEndpoint(ctx context.Context, pool *pgxpool.Pool) RequestHandler {
+func LoginEndpoint(ctx context.Context, pool *pgxpool.Pool, red *redis.Client) RequestHandler {
     return func(w http.ResponseWriter, r *http.Request) {
         if r.Method != http.MethodPost {
             text := "405: expected Post"
@@ -50,6 +52,7 @@ func LoginEndpoint(ctx context.Context, pool *pgxpool.Pool) RequestHandler {
         }
 
         // case if gsuite user
+        var aud string
         if typeOf  == "gsuite" {
             payload, err := auth.ValidateGoogleJWT(fmt.Sprintf("%v", body["jwt"]))
             if err != nil {
@@ -60,25 +63,40 @@ func LoginEndpoint(ctx context.Context, pool *pgxpool.Pool) RequestHandler {
             log.Printf("%v\n", payload)
             log.Printf("aud: %v\n", payload.Audience)
 
-            res, err := db.CheckGsuiteUser(ctx, pool, payload.Email, payload.Audience)
+            aud, err = db.CheckGsuiteUser(ctx, pool, payload.Email)
             if err != nil {
                 log.Printf("ERROR: unable to verify Gsuite User.\n")
                 w.WriteHeader(http.StatusInternalServerError)
                 return
             }
-            if res {
-                log.Printf("Verified user!\n")
-                // TODO create session for user
-                // TODO send back cookie
-            } else {
+            if aud == "" {
                 log.Printf("Unverified user.\n")
-                // TODO return error back to user
-            }
+                w.WriteHeader(404)
+                return
+            }    
+            
         } else { // case if normal user
             w.WriteHeader(http.StatusInternalServerError)
             return
         }
-        w.WriteHeader(http.StatusTemporaryRedirect)
+
+        log.Printf("Verified user!\n")
+
+        // TODO create session for user 
+        cookie, err := session.NewSession(ctx, red, aud, "") 
+        if err != nil {
+            log.Printf("Error unable to set cookie.\n")
+            w.WriteHeader(http.StatusInternalServerError)
+            return
+        }
+        cookieStruct := http.Cookie {
+            Name: "test",
+            Value: cookie,
+        }
+        // TODO send back cookie
+        http.SetCookie(w, &cookieStruct)
+
+        w.WriteHeader(http.StatusOK)
         return
     }
 }

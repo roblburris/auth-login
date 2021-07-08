@@ -4,6 +4,7 @@ import (
     "context"
     "github.com/jackc/pgx/v4/pgxpool"
     "github.com/roblburris/auth-login/endpoints"
+    "github.com/go-redis/redis/v8"
     "io/ioutil"
     "log"
     "net/http"
@@ -50,7 +51,14 @@ func main() {
     }
     conn.Release()
 
-	loginHandler := endpoints.LoginEndpoint(ctx, pool)
+    // setup redis
+    red := redis.NewClient(&redis.Options{
+        Addr:     "localhost:6379",
+        Password: "", // no password set
+        DB:       0,  // use default DB
+    })
+
+	loginHandler := endpoints.LoginEndpoint(ctx, pool, red)
     http.Handle("/", http.FileServer(http.Dir("../frontend/")))
 	http.HandleFunc("/login", loginHandler)
 	log.Printf("reached\n")

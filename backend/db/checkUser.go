@@ -31,21 +31,21 @@ const GET_NON_GSIGN_USER = `SELECT u.aud, u.email, u.name, u.role
                         AND n.pw = $2`
 
 func CheckGsuiteUser(ctx context.Context, pool *pgxpool.Pool,
-    email string, googleAud string) (bool, error) {
+    email string) (string, error) {
     // first check to see if user exists in DB
     aud, err := getUserAud(ctx, pool, email)
     if err != nil {
         log.Printf("ERROR: unable to get aud.\n")
-        return false, err
+        return "", err
     }
 
     if aud == "" {
         log.Printf("aud does not exist in Users DB.\n")
-        return false, errors.New("USER_DNE")
+        return "", errors.New("USER_DNE")
     }
 
-    // we have aud, check to see if it matches googleAUD
-    return aud == googleAud, nil
+    // return userID (aud)
+    return aud, nil
 }
 
 

@@ -1,12 +1,13 @@
 package session
 
 import (
-    "bytes"
     "context"
     "encoding/json"
-    "fmt"
+    "log"
     "github.com/go-redis/redis/v8"
     "time"
+    "encoding/base64"
+    "crypto/sha256"
 )
 
 type ValueSession struct {
@@ -22,10 +23,25 @@ func NewSession(ctx context.Context, red *redis.Client, aud string, role string)
         role: role,
         expiration: time.Now().AddDate(0, 1, 0).Unix(),
     }
-    a := []byte(fmt.Sprintf("%v", newSessionValue))
-    byteStruct := new(bytes.Buffer)
-    json.NewEncoder(byteStruct).Encode(a)
-    return string(a), nil
+    
+    encodedSessionValue, err := json.Marshal(newSessionValue)
+    if err != nil {
+        log.Printf("ERROR: unable to encode struct. %v\n", err)
+        return "", err
+    }
+    
+    
+    hash := sha256.New()
+    hash.Write([]byte(newSessionValue.aud + string(newSessionValue.expiration)))
+    key := base64.StdEncoding.EncodeToString(hash.Sum(nil))
+
+    err = red.Set(ctx, key, encodedSessionValue, 0).Err()
+    if err != nil {
+        log.Printf("ERROR: error inserting into RedisDB. %v\n", err)
+        return "", err
+    }
+    
+    return key, nil
 }
 
 func CheckSession(ctx context.Context, red *redis.Client, key string) {

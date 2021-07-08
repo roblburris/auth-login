@@ -74,9 +74,9 @@ func ValidateGoogleJWT(tokenString string) (GoogleClaims, error) {
 		return GoogleClaims{}, errors.New("iss is invalid")
 	}
 
-	// if claims.Audience != "" {
-	// 	return GoogleClaims{}, errors.New("aud is invalid")
-	// }
+	if claims.Audience != "663269371597-v5mu98a0p4ic6be949eo21ousajet09r.apps.googleusercontent.com" {
+		return GoogleClaims{}, errors.New("aud is invalid")
+	}
 
 	if claims.ExpiresAt < time.Now().UTC().Unix() {
 		return GoogleClaims{}, errors.New("JWT is expired")
